@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "readline-sync": "^1.4.10"
+  },
+  "scripts": {
+    "tushar":  "node AddressBookMain.js"
   }
 }

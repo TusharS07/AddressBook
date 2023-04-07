@@ -1,12 +1,14 @@
 var readlineSync = require('readline-sync');
 const utility = require('./Utility');
+const fs = require('fs');
 let addressBookArray = new Array();
+const jsonContent = JSON.stringify(addressBookArray);
 
 const nameValideation = RegExp("^[A-Z]{1}[a-z]{2,}$");
 const zipCodeValidation = RegExp("^[1-9]{1}[0-9]{5}$");
 const phoneValidation = RegExp("'^[0-9]{2}|\s|[0-9]{10}$");
 const emailValidation = RegExp("^([a-z]+)([0-9])*([_+-.]{1}[a-z0-9]+)*(@)([a-z0-9]+)[.]([a-z]{2,})([.][a-z]{2}){0,1}$");
-
+let flag = true;
 
 class AddressBookOperations {
 
@@ -14,7 +16,7 @@ class AddressBookOperations {
     addContact() {
 
         let firstName = readlineSync.question("Enter First Name: ");
-        let flag = true;
+        
         while (flag) {
             if (!nameValideation.test(firstName)) {
                 console.log("Invalid name");
@@ -104,8 +106,31 @@ class AddressBookOperations {
         }
 
         addressBookArray.push(contact);
+        this.writeFile(addressBookArray);
         console.log("Contact Added Successfully!!");
     }
+
+    writeFile(array) {
+        let jsonContent = JSON.stringify(array);
+        fs.writeFileSync('addressBookData.json', jsonContent);
+    }
+
+    readFile() {
+        let readData = fs.readFileSync('addressBookData.json');
+        let array = JSON.parse(readData);
+        return array;
+    }
+
+
+    // deleteCantactData() {
+    //     let name = readlineSync.question("enter The First name: ");
+    //     addressBookArray.push(this.readFile);
+    //     let index = addressBookArray.findIndex(x => x.firstName === name);
+    //     console.log(index);
+    //     let result = utility.deleteContact(index, addressBookArray);
+    //     this.writeFile(addressBookArray);
+    //     console.log(result);
+    // }
 
 
     // deleteCantactData() {
@@ -126,6 +151,7 @@ class AddressBookOperations {
         let index = addressBookArray.findIndex(x => x.firstName === name);
         if (index != -1) {
             addressBookArray.splice(index, 1);
+            this.writeFile(addressBookArray);
             console.log("Contact Deleted");
         } else {
             console.log("Contact Not Found")
@@ -144,7 +170,6 @@ class AddressBookOperations {
             switch (choice) {
                 case 1:
                     let name = readlineSync.question("Enter First Name: ");
-                    let flag = true;
                     while (flag) {
                         if (!nameValideation.test(name)) {
                             console.log("Invalid name");
@@ -233,6 +258,7 @@ class AddressBookOperations {
                     break;
 
             }
+            this.writeFile(addressBookArray);
             console.log("Contact Updated");
         }
     }
